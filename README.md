@@ -1,5 +1,9 @@
 # proxima-mcp-setup
 
+<!-- HMZ PORTFOLIO STANDARD -->
+> Portfolio status: active · Visibility: public · Source of truth: current repository source.
+<!-- END HMZ PORTFOLIO STANDARD -->
+
 > **Proxima MCP Setup** — Multi-AI query engine: Claude+GPT+Gemini+Perplexity in parallel, research chains, and AI blast operations.
 
 <p align="center">
