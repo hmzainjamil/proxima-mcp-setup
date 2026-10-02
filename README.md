@@ -1,154 +1,29 @@
-# proxima-mcp-setup
+# Proxima MCP Setup
 
-> **Proxima MCP Setup** — Multi-AI query engine: Claude+GPT+Gemini+Perplexity in parallel, research chains, and AI blast operations.
+This repository currently contains a single README describing a proposed Proxima MCP setup. It contains no MCP server configuration, source code, dependency manifest, installation scripts, or operational documentation.
 
-<p align="center"><a href="https://github.com/hmzainjamil/proxima-mcp-setup">Repository</a> · <a href="https://github.com/hmzainjamil/proxima-mcp-setup/commits/main">Commits</a> · <a href="https://github.com/hmzainjamil/proxima-mcp-setup/issues">Issues</a></p>
-<p align="center"><img alt="Documentation" src="https://img.shields.io/badge/documentation-deep%20editorial-lightgrey"> <img alt="Lifecycle" src="https://img.shields.io/badge/lifecycle-active-success"></p>
+## Current repository contents
 
-<!-- HMZ DEEP README v1 -->
-
-## At a glance
-
-| Field | Current state |
-|---|---|
-| Repository | proxima-mcp-setup |
-| Visibility | Public |
-| Lifecycle | Active |
-| Evidence basis | Current repository documentation and source-visible material |
-
-## Why this exists
-
-**Proxima MCP Setup** — Multi-AI query engine: Claude+GPT+Gemini+Perplexity in parallel, research chains, and AI blast operations.
-
-The README is organized around the repository's actual documented scope. Unverified benchmarks, production claims, and external outcomes are not presented as facts.
-
-## 🧠 CONCEPTS
-
-| Feature | Location | Description |
+| Path | Purpose | Status |
 |---|---|---|
-| CoreEngine | `core/engine.py` | Primary execution logic and orchestration layer |
-| ConfigManager | `config/manager.py` | Environment validation, hot-reload, API key checks |
-| ProviderAdapters | `adapters/` | Per-provider API wrappers with auth + retry logic |
-| TierRouter | `routing/tier0.py` | Ollama→DeepSeek→Gemini→Groq→GPT cost ladder |
-| OutputFormatter | `output/formatter.py` | Caveman-compressed, signal-dense output pipeline |
-| LogManager | `logs/manager.py` | Structured JSON logging to ~/.claude/tcc-logs/ |
-| HookHandler | `hooks/handler.py` | SessionStart/Stop integration for Claude Code |
-| RetryLogic | `core/retry.py` | Exponential backoff + alt-provider on persistent failure |
-| StatusTracker | `core/status.py` | Per-operation metrics: latency, cost, confidence scores |
-| Scheduler | `schedule/scheduler.py` | LaunchAgent-based cron scheduling for automation |
+| `README.md` | Describes an intended multi-model research setup | Concept text only |
 
-## ⚙️ HOW IT WORKS
+The README mentions Claude Code, ChatGPT, Gemini, Perplexity, parallel research, and related repositories. The repository tree does not provide implementation or configuration to verify those integrations, tool counts, routing behavior, or dependencies.
 
-```
-Input / Trigger (CLI command or hook event)
-    │
-    ▼
-ConfigManager: load .env, validate all provider API keys
-    │
-    ▼
-TierRouter: Ollama → DeepSeek → Gemini → Groq → GPT
-    │        (cost-ordered; local-first enforced always)
-    ▼
-CoreEngine: primary processing with selected provider adapter
-    │
-    ├── ProviderAdapter: API call with rate-limit handling
-    ├── RetryLogic: exponential backoff + alt provider on failure
-    ├── StatusTracker: record latency, cost, confidence score
-    │
-    ▼
-OutputFormatter: caveman-compress result to signal-dense format
-    │
-    ▼
-LogManager: persist full run record to ~/.claude/tcc-logs/
-    │
-    ▼
-stdout / file output / hook callback response
-```
+## Setup and use
 
-## 🚀 INSTALL
+There are no source-backed installation, configuration, or usage commands in this repository. The previous README included commands for files and setup steps that are not present, so those commands have been removed. No connected MCP service or client configuration is supplied.
 
-```bash
-git clone https://github.com/hmzainjamil/proxima-mcp-setup
-cd proxima-mcp-setup
-pip install -r requirements.txt
-cp .env.example .env
-# Fill in: GROQ_API_KEY, GEMINI_API_KEY, DEEPSEEK_API_KEY
-# Optional: OPENAI_API_KEY, ANTHROPIC_API_KEY (fallback only)
-python setup.py verify    # confirms all provider connections live
-python setup.py hooks     # installs Claude Code SessionStart/Stop hooks
-mkdir -p ~/.claude/tcc-logs/  # create log directory
-```
+## Security and data
 
-## 📟 USAGE
+No credentials or configuration examples are included. Before implementing the proposal, document which services receive user prompts or retrieved data, how credentials are stored, and which actions are available to connected tools. Never commit API keys or private configuration.
 
-```bash
-# Primary usage — single command fires full pipeline
-python main.py "your goal or task description here"
+## Documentation and release status
 
-# Specify provider explicitly (skip auto-routing)
-python main.py --provider groq "summarize this document quickly"
-
-# Output to file (default: stdout)
-python main.py "task description" --output ~/Downloads/result.md
-
-# Dry run — show routing plan without making any API calls
-python main.py --dry-run "test task to check routing"
-
-# Verbose mode — shows provider selection, scores, latency
-python main.py --verbose "research task with full debug output"
-
-# Batch mode — process multiple inputs from file
-python main.py --batch inputs.txt --output ~/Downloads/results/
-
-# Status and health verification
-python main.py status      # show all configured providers + health
-python main.py verify      # test live connections to all providers
-```
-
-## ⚙️ CONFIGURATION
-
-| Variable | Default | Description |
-|---|---|---|
-| `GROQ_API_KEY` | — | Groq Cloud API key (primary fast text provider) |
-| `GEMINI_API_KEY` | — | Google AI Studio key (long-context and multimodal) |
-| `DEEPSEEK_API_KEY` | — | DeepSeek API key (code specialist tasks) |
-| `OPENAI_API_KEY` | — | OpenAI (Tier 1 fallback; used after Tier 0 exhausted) |
-| `ANTHROPIC_API_KEY` | — | Claude (final resort; only on explicit user request) |
-| `OLLAMA_BASE_URL` | `http://localhost:11434` | Local Ollama endpoint (checked first always) |
-| `LOG_DIR` | `~/.claude/tcc-logs/` | Output log directory for all run records |
-| `TIMEOUT_S` | `30` | Per-operation timeout in seconds per provider |
-| `RETRY_COUNT` | `2` | Number of retry attempts before marking failed |
-| `CONFIDENCE_THRESHOLD` | `0.6` | Minimum confidence score to accept output (0.0-1.0) |
-| `COMPRESS_OUTPUT` | `true` | Apply caveman-compression to all outputs |
-| `LOG_LEVEL` | `INFO` | Logging verbosity: DEBUG / INFO / WARN / ERROR |
-| `LOCAL_FIRST` | `true` | Always try Ollama before any paid API call |
-| `AUTO_RETRY_ALT` | `true` | Automatically switch provider on persistent failure |
-| `OUTPUT_DIR` | `~/Downloads` | Default directory for all generated file outputs |
-
-## Validation and evidence
-
-No dedicated test or evaluation section was available in the current README.
-
-## 🔐 SECURITY CONSIDERATIONS
-
-## Limitations
-
-- Planned work is not presented as completed functionality.
-- Quantitative claims require reproducible evidence.
-- Provider behavior and pricing are external dependencies.
-
-## 📚 RELATED REPOS IN THE HMZ AI SYSTEM
-
-| Repo | Role | Dependency |
-|---|---|---|
-| [G0DM0D3](https://github.com/hmzainjamil/G0DM0D3) | Multi-model racing + Liquid Response | Uses tier0-llm-router |
-| [mae-master-automation-engine](https://github.com/hmzainjamil/mae-master-automation-engine) | Goal decomposition + specialist swarm | Uses tcc, tier0 |
-| [tcc-task-command-center](https://github.com/hmzainjamil/tcc-task-command-center) | Parallel blast + queue + dashboard | Used by mae |
-| [tier0-llm-router](https://github.com/hmzainjamil/tier0-llm-router) | Cost-optimized routing ladder | Used by all |
-| [hermes-ai-system](https://github.com/hmzainjamil/hermes-ai-system) | Persistent agent + 80+ skills | Uses tier0, mcp |
-| [claude-ai-system-backup](https://github.com/hmzainjamil/claude-ai-system-backup) | System backup + restore | Backs up all |
-
-<div align="center">Built by <a href="https://github.com/hmzainjamil">HMZ</a> · Part of the <a href="https://github.com/hmzainjamil/claude-ai-system">HMZ Claude AI System</a> · Zero broken workflows</div>
+- No code, tests, package/dependency manifest, license file, or release workflow appears in the current repository tree.
+- No performance, pricing, live connection, or production-readiness claim is verified here.
+- GitHub repository metadata reports no declared license. Do not infer permission to reuse or redistribute the README or future implementation.
+- Related repositories named in the previous README are not verified as dependencies by this repository.
 
 ## Maintainer
 
